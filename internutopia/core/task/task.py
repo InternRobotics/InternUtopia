@@ -94,8 +94,11 @@ class BaseTask(ABC):
             for prim in Usd.PrimRange.AllPrims(self._scene.scene_prim):
                 if prim.GetAttribute('physics:rigidBodyEnabled'):
                     log.debug(f'[BaseTask.load] found rigid body at path: {prim.GetPath()}')
-                    _rb = IRigidBody.create(prim_path=str(prim.GetPath()), name=str(prim.GetPath()))
-                    self.scene_rigid_bodies[str(prim.GetPath())] = _rb
+                    try:
+                        _rb = IRigidBody.create(prim_path=str(prim.GetPath()), name=str(prim.GetPath()))
+                        self.scene_rigid_bodies[str(prim.GetPath())] = _rb
+                    except Exception as e:
+                        log.error(f'Fail to create IRigidBody at {prim.GetPath()}: {e}')
 
         self.robots = init_robots(self.config, self._scene)
         self.objects = init_objects(self.config, self._scene)
