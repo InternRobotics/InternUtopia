@@ -88,16 +88,16 @@ class InverseKinematicsController(BaseController):
             # However, the world pose won't change even its base link has moved for some robots like ridgeback franka,
             # so the ik base pose returned by get_local_pose may change during simulation, which is unexpected.
             # So the initial local pose of ik base is saved at first and used during the whole simulation.
-            self._ik_base_local_pose = self._robot.get_robot_ik_base().get_local_pose()
+            self._ik_base_local_pose = self.robot.get_robot_ik_base().get_local_pose()
 
     def get_ik_base_world_pose(self) -> Tuple[np.ndarray, np.ndarray]:
         if self._reference == 'robot':
-            ik_base_pose = self._robot.get_robot_ik_base().get_local_pose()
+            ik_base_pose = self.robot.get_robot_ik_base().get_local_pose()
         elif self._reference == 'arm_base':
             # Robot base is always at the origin.
             ik_base_pose = (np.array([0, 0, 0]), np.array([1, 0, 0, 0]))
         else:
-            ik_base_pose = self._robot.get_robot_ik_base().get_pose()
+            ik_base_pose = self.robot.get_robot_ik_base().get_pose()
         return ik_base_pose
 
     def forward(

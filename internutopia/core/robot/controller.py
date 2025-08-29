@@ -1,3 +1,4 @@
+import weakref
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from typing import Any, Dict, List, Union
@@ -31,7 +32,7 @@ class BaseController(ABC):
         if config.name is None:
             raise ValueError('must specify controller name.')
         self._obs = {}
-        self._robot = robot
+        self.robot_ref = weakref.ref(robot)  # Use `weakref` to prevent memory leaks caused by circular references
         self.config = config
         self.sub_controllers: List[BaseController]
         self.obs_keys = []
@@ -76,11 +77,7 @@ class BaseController(ABC):
 
     @property
     def robot(self):
-        return self._robot
-
-    @robot.setter
-    def robot(self, value):
-        self._robot = value
+        return self.robot_ref()
 
     def cleanup(self):
         """
