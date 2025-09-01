@@ -92,7 +92,7 @@ class BaseTask(ABC):
         if self.config.scene_asset_path is not None:
             self._scene.load(self.config, self.env_id, self.env_offset)
             for prim in Usd.PrimRange.AllPrims(self._scene.scene_prim):
-                if prim.GetAttribute('physics:rigidBodyEnabled'):
+                if prim.GetAttribute('physics:rigidBodyEnabled').Get():
                     log.debug(f'[BaseTask.load] found rigid body at path: {prim.GetPath()}')
                     try:
                         _rb = IRigidBody.create(prim_path=str(prim.GetPath()), name=str(prim.GetPath()))
